@@ -1,19 +1,12 @@
 from rest_framework.generics import get_object_or_404
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 
 from .serializers import GroupSerializer, PostSerializer, CommentSerializer
+from .permissions import IsAuthorOrReadOnly
 from posts.models import Group, Post
 
-
-class IsAuthorOrReadOnly(permissions.BasePermission):
-
-    def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        return obj.author == request.user
-
-
-API_PERMISSIONS = [permissions.IsAuthenticated, IsAuthorOrReadOnly]
+API_PERMISSIONS = [IsAuthenticated, IsAuthorOrReadOnly]
 
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
